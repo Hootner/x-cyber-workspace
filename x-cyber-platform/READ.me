@@ -1,0 +1,130 @@
+# X-Cyber Platform
+
+A full-stack social media platform built with React, Node.js, Express, and MongoDB. Users can register, log in, create posts, like posts, comment on posts, and manage their profile.
+
+## Features
+- User authentication (register, login, logout) with JWT
+- Create, edit, delete posts with confirmation dialogs
+- Like/unlike posts
+- Comment on posts and delete comments with confirmation dialogs
+- User profile page showing user's posts
+- Protected routes for authenticated users
+- Toast notifications for user feedback
+- Centralized API service layer
+- Token expiry handling with automatic logout
+- Dockerized deployment with Nginx, MongoDB, and HTTPS support
+
+## Prerequisites
+- Node.js (v18 or higher)
+- Docker and Docker Compose
+- MongoDB (if running locally without Docker)
+- SSL certificates for HTTPS (e.g., self-signed or from Let's Encrypt)
+
+## Installation
+
+### Local Development
+1. **Clone the Repository**:
+   ```
+   git clone <repository-url>
+   cd x-cyber-platform
+   ```
+
+2. **Install Backend Dependencies**:
+   ```
+   cd server
+   npm install
+   ```
+
+3. **Install Frontend Dependencies**:
+   ```
+   cd ../client
+   npm install
+   ```
+
+4. **Set Up Environment Variables**:
+   - Create a `server/.env` file with the following:
+     ```
+     MONGODB_URI=mongodb://localhost:27017/x-cyber
+     JWT_SECRET=your_jwt_secret
+     PORT=3000
+     ```
+   - Replace `your_jwt_secret` with a secure random string.
+
+5. **Run MongoDB Locally** (if not using Docker):
+   - Ensure MongoDB is running on `localhost:27017`.
+
+6. **Start the Backend**:
+   ```
+   cd server
+   npm start
+   ```
+
+7. **Start the Frontend**:
+   ```
+   cd client
+   npm start
+   ```
+   - The frontend will run on `http://localhost:3001`.
+
+### Docker Deployment
+1. **Set Up Environment Variables**:
+   - Ensure `server/.env` is configured as above.
+
+2. **Generate SSL Certificates** (for testing):
+   ```
+   mkdir certs
+   openssl req -x509 -newkey rsa:4096 -keyout certs/key.pem -out certs/cert.pem -days 365 -nodes
+   ```
+   - In production, use certificates from a provider like Let's Encrypt.
+
+3. **Build and Run with Docker Compose**:
+   ```
+   docker-compose up --build
+   ```
+
+4. **Access the App**:
+   - Frontend: `https://localhost` (accept the self-signed certificate warning for testing)
+   - Backend API: `https://localhost/api`
+
+## Project Structure
+- **client/**: React frontend
+  - `src/components/`: React components (e.g., `Posts.js`, `PostDetail.js`)
+  - `src/context/`: Authentication context (`AuthContext.js`)
+  - `src/services/`: API service layer (`api.js`)
+  - `src/App.js`: Main app component with routing
+  - `src/App.css`: Basic styling
+- **server/**: Node.js/Express backend
+  - `models/`: Mongoose models (`Users.js`, `Posts.js`)
+  - `routes/`: API routes (`auth.js`, `posts.js`)
+  - `middleware/`: Authentication middleware (`auth.js`)
+  - `index.js`: Main server file
+  - `.env`: Environment variables
+- `Dockerfile`: Docker configuration for building the app
+- `nginx.conf`: Nginx configuration for serving the frontend with HTTPS
+- `docker-compose.yml`: Docker Compose configuration for running the app and MongoDB
+- `certs/`: Directory for SSL certificates
+
+## API Endpoints
+- **Auth**:
+  - `POST /api/auth/register`: Register a new user
+  - `POST /api/auth/login`: Log in a user
+- **Posts** (most require JWT authentication):
+  - `GET /api/posts`: Get all posts
+  - `GET /api/posts/:id`: Get a specific post
+  - `POST /api/posts`: Create a new post
+  - `PUT /api/posts/:id`: Update a post
+  - `DELETE /api/posts/:id`: Delete a post
+  - `POST /api/posts/:id/like`: Like/unlike a post
+  - `POST /api/posts/:id/comment`: Add a comment to a post
+  - `DELETE /api/posts/:id/comment/:commentId`: Delete a comment
+
+## Future Improvements
+- Add input validation on the backend (e.g., using Joi)
+- Implement real-time updates with WebSocket (e.g., for new comments/likes)
+- Add unit and end-to-end tests
+- Improve UI with a CSS framework (e.g., Tailwind CSS)
+- Add search and filtering for posts
+- Implement pagination or infinite scrolling for posts
+
+## License
+MIT License
